@@ -18,24 +18,33 @@
 
 FILE *__logger_log_file;
 
+
+
+
+
+#define LOGGER_INIT_FROM_STREAM(__STREAM) do{\
+	__logger_log_file = (__STREAM); \
+	}while(0)
+
 #define LOGGER_INIT() do{\
 	__logger_log_file = fopen(LOG_FILENAME,"w+"); \
 	}while(0)
 
-#define LOGGER_PRINT(...) fprintf(__logger_log_file,__VA_ARGS__)
+#define LOGGER_PRINT(PATTERN,...) fprintf(__logger_log_file,(PATTERN),__VA_ARGS__)
 
-#define LOGGER_LOG(LEVEL,...) do{\
+#define LOGGER_LOG(LEVEL,PATTERN,...) do{\
 	if(LOG_LEVEL >= (LEVEL)){\
-		LOGGER_PRINT(__VA_ARGS__);\
+		LOGGER_PRINT((PATTERN),__VA_ARGS__);\
 	}\
 	}while(0)
 
-#define LOGGER_LOG_EXC(LEVEL,...) do{\
+#define LOGGER_LOG_EXC(LEVEL,PATTERN,...) do{\
 	if(LOG_LEVEL & (LEVEL)){\
-		LOGGER_PRINT(__VA_ARGS__);\
+		LOGGER_PRINT(PATTERN,__VA_ARGS__);\
 	}\
 	}while(0)
 
 #define LOGGER_FREE() fclose(__logger_log_file)
 
+#define LOGGER_FREE_FROM_STREAM() __logger_log_file = 0
 #endif
